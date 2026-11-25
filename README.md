@@ -61,16 +61,91 @@ Además, esta suite aprovecha las capacidades nativas de AGY IDE:
 
 ---
 
-## Instalación en otros proyectos o máquinas
+## Cómo Descargar y Aplicar desde GitHub en Otro Proyecto
 
-- **Por proyecto (versionado en Git para todo el equipo)**:
-  Copia la carpeta `.agents/skills/` a la raíz de tu repositorio:
-  ```bash
-  mkdir -p <tu-proyecto>/.agents/skills
-  cp -R .agents/skills/sdd* <tu-proyecto>/.agents/skills/
-  ```
-- **Global (disponible en todos los workspaces de AGY IDE en tu equipo)**:
-  ```bash
-  mkdir -p ~/.gemini/config/skills
-  cp -R .agents/skills/sdd* ~/.gemini/config/skills/
-  ```
+Repositorio oficial: `https://github.com/ADOLFO-DEV/SDD_FOR_AI_AGENTS`
+
+Puedes instalar esta suite en cualquier proyecto nuevo o existente usando cualquiera de los siguientes métodos:
+
+### Opción 1: Aplicar en un proyecto específico (Recomendado para equipos / Git)
+
+Ejecuta este comando en la **raíz de tu otro proyecto**. Clona únicamente la última versión en una carpeta temporal, copia las skills a `.agents/skills/` y limpia los temporales sin ensuciar tu historial de Git:
+
+**macOS / Linux:**
+```bash
+git clone --depth 1 https://github.com/ADOLFO-DEV/SDD_FOR_AI_AGENTS.git /tmp/sdd-agy \
+  && mkdir -p .agents/skills \
+  && cp -R /tmp/sdd-agy/.agents/skills/sdd* .agents/skills/ \
+  && chmod +x .agents/skills/sdd/scripts/sdd_helper.py \
+  && rm -rf /tmp/sdd-agy
+```
+
+**Windows (PowerShell):**
+```powershell
+git clone --depth 1 https://github.com/ADOLFO-DEV/SDD_FOR_AI_AGENTS.git "$env:TEMP\sdd-agy"
+New-Item -ItemType Directory -Force -Path ".agents\skills" | Out-Null
+Copy-Item -Recurse -Force "$env:TEMP\sdd-agy\.agents\skills\sdd*" ".agents\skills\"
+Remove-Item -Recurse -Force "$env:TEMP\sdd-agy"
+```
+
+---
+
+### Opción 2: Con el CLI estándar `npx skills` (`skills.sh`)
+
+Desde la raíz de tu otro proyecto, instala directamente desde el repositorio de GitHub (te permitirá elegir alcance por proyecto o global):
+
+```bash
+npx skills add https://github.com/ADOLFO-DEV/SDD_FOR_AI_AGENTS
+```
+
+---
+
+### Opción 3: Instalación Global en AGY IDE (Disponible en todos tus proyectos)
+
+Si prefieres instalarlo una sola vez en tu máquina para usar `/sdd-*` en cualquier workspace de AGY IDE sin copiar carpetas en cada repositorio:
+
+**macOS / Linux:**
+```bash
+git clone --depth 1 https://github.com/ADOLFO-DEV/SDD_FOR_AI_AGENTS.git /tmp/sdd-agy \
+  && mkdir -p ~/.gemini/config/skills \
+  && cp -R /tmp/sdd-agy/.agents/skills/sdd* ~/.gemini/config/skills/ \
+  && chmod +x ~/.gemini/config/skills/sdd/scripts/sdd_helper.py \
+  && rm -rf /tmp/sdd-agy
+```
+
+**Windows (PowerShell):**
+```powershell
+git clone --depth 1 https://github.com/ADOLFO-DEV/SDD_FOR_AI_AGENTS.git "$env:TEMP\sdd-agy"
+New-Item -ItemType Directory -Force -Path "$HOME\.gemini\config\skills" | Out-Null
+Copy-Item -Recurse -Force "$env:TEMP\sdd-agy\.agents\skills\sdd*" "$HOME\.gemini\config\skills\"
+Remove-Item -Recurse -Force "$env:TEMP\sdd-agy"
+```
+
+---
+
+### Opción 4: Pedírselo directamente al Agente en AGY IDE
+
+Abre tu otro proyecto en **AGY IDE** y pega este prompt en el chat:
+
+```text
+Clona temporalmente https://github.com/ADOLFO-DEV/SDD_FOR_AI_AGENTS.git, copia todas las carpetas sdd* de .agents/skills/ dentro de .agents/skills/ de este proyecto, dale permisos de ejecución a sdd_helper.py y elimina la carpeta temporal.
+```
+
+---
+
+## Primeros Pasos tras Instalar en tu Proyecto
+
+1. **Verifica la carga en AGY IDE**: Escribe `/sdd` en la caja de chat de AGY IDE (si tenías la ventana abierta antes de copiar los archivos, abre una **Nueva Conversación** para refrescar el índice de skills). Verás aparecer `/sdd` y los 9 comandos `/sdd-*`.
+2. **Inicializa la Constitución del proyecto (una sola vez)**:
+   ```text
+   /sdd-constitution
+   ```
+   El agente detectará tu stack y test runner automáticamente, te propondrá `docs/constitution.md` + las reglas para `AGENTS.md` y esperará tu aprobación.
+3. **Crea tu primera especificación funcional**:
+   ```text
+   /sdd-spec 001-mi-funcionalidad <describe qué quieres lograr y por qué>
+   ```
+4. **¿No recuerdas en qué paso ibas al retomar el proyecto?** Ejecuta en cualquier momento:
+   ```text
+   /sdd-status
+   ```
